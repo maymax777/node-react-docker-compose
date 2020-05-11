@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+var cors = require('cors');
 const path = require('path');
 
 // Constants
@@ -12,6 +13,9 @@ const CLIENT_BUILD_PATH = path.join(__dirname, '../../client/build');
 // App
 const app = express();
 
+// To prevent errors from Cross Origin Resource Sharing, Use cors Middleware
+app.use(cors());
+
 // Static files
 app.use(express.static(CLIENT_BUILD_PATH));
 
@@ -19,13 +23,13 @@ app.use(express.static(CLIENT_BUILD_PATH));
 app.get('/api', (req, res) => {
   res.set('Content-Type', 'application/json');
   let data = {
-    message: 'Hello world, Woooooeeeee!!!!'
+    message: 'Hello world, Woooooeeeee!!!!',
   };
   res.send(JSON.stringify(data, null, 2));
 });
 
 // All remaining requests return the React app, so it can handle routing.
-app.get('*', function(request, response) {
+app.get('*', function (request, response) {
   response.sendFile(path.join(CLIENT_BUILD_PATH, 'index.html'));
 });
 
