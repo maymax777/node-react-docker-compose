@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const request = require('request');
-const CONFIG = require('./config');
+const CONFIG = require('../shared/config');
 
 /**
  * Get all product ids limit upto 250
@@ -166,3 +166,5 @@ async function start() {
 
   console.log(products.length);
 }
+
+module.exports = { serviceGetAllProducts };

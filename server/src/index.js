@@ -1,7 +1,8 @@
 'use strict';
 
 const express = require('express');
-var cors = require('cors');
+const rfr = require('rfr');
+const cors = require('cors');
 const path = require('path');
 
 // Constants
@@ -13,6 +14,8 @@ const CLIENT_BUILD_PATH = path.join(__dirname, '../../client/build');
 // App
 const app = express();
 
+// Routes
+var routes = rfr('/src/routes');
 // To prevent errors from Cross Origin Resource Sharing, Use cors Middleware
 app.use(cors());
 
@@ -25,6 +28,7 @@ app.get('/api', (req, res) => {
   let data = {
     message: 'Hello world, Woooooeeeee!!!!',
   };
+  console.log('/api: ');
   res.send(JSON.stringify(data, null, 2));
 });
 
@@ -33,5 +37,7 @@ app.get('*', function (request, response) {
   response.sendFile(path.join(CLIENT_BUILD_PATH, 'index.html'));
 });
 
-app.listen(PORT, HOST);
-console.log(`Running on http://${HOST}:${PORT}`);
+app.listen(PORT, HOST, function () {
+  console.log(`Running on http://${HOST}:${PORT}`);
+  routes.bindAllRequests(app);
+});
