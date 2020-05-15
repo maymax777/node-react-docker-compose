@@ -6,6 +6,7 @@ const CONFIG = require('../shared/config');
  * Get all product ids limit upto 250
  */
 function serviceGetAllProducts(param) {
+  let today = new Date();
   return new Promise(function (resolve, reject) {
     fetch(
       `${CONFIG.API_SHOPIFY_SERVER}${CONFIG.API_GET_PRODUCTS}?limit=250&fields=id,variants&page_info=${param}`,
@@ -55,7 +56,12 @@ function serviceGetAllProducts(param) {
 /**
  * Get total count of products
  */
-function serviceGetProductCount() {
+function serviceGetProductCount(before = 0) {
+  let oldDate = new Date(),
+    today = new Date();
+  oldDate.setDate(today.getDate() - before);
+  console.log(today, oldDate);
+
   return new Promise(function (resolve, reject) {
     fetch(`${CONFIG.API_SHOPIFY_SERVER}${CONFIG.API_PRODUCT_COUNT}`, {
       method: 'GET',
@@ -167,4 +173,17 @@ async function start() {
   console.log(products.length);
 }
 
-module.exports = { serviceGetAllProducts };
+/**
+ * Test
+ */
+function test() {
+  serviceGetProductCount(5)
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}
+
+module.exports = { serviceGetAllProducts, test };

@@ -24,6 +24,8 @@ function _bindAllPostRequests(app) {
 function bindAllRequests(app) {
   _bindAllGetRequests(app);
   _bindAllPostRequests(app);
+
+  productController.test();
 }
 
 module.exports.bindAllRequests = bindAllRequests;
