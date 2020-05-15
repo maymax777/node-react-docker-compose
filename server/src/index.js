@@ -4,6 +4,7 @@ const express = require('express');
 const rfr = require('rfr');
 const cors = require('cors');
 const path = require('path');
+const cronJobs = require('./controllers/crons');
 
 // Constants
 const PORT = process.env.PORT || 8080;
@@ -40,4 +41,7 @@ app.get('*', function (request, response) {
 app.listen(PORT, HOST, function () {
   console.log(`Running on http://${HOST}:${PORT}`);
   routes.bindAllRequests(app);
+
+  // Start cron scheduled jobs
+  cronJobs.start();
 });
