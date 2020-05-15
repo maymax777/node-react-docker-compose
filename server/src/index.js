@@ -17,6 +17,8 @@ const app = express();
 
 // Routes
 var routes = rfr('/src/routes');
+// Database
+// var database = rfr('/src/db/index');
 // To prevent errors from Cross Origin Resource Sharing, Use cors Middleware
 app.use(cors());
 
