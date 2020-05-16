@@ -9,13 +9,13 @@ services:
       - ./nginx/conf.d/app.conf:/etc/nginx/conf.d/app.conf
   web:
     build: .
-    expose:
-      - 80
-    # ports:
-    #  - '80:8000'
+    # expose:
+    #  - 80
+    ports:
+      - '80:8080'
     restart: always
     # env_file: ./server/.env # TODO - uncomment this to auto-load your .env file!
     environment:
       VIRTUAL_HOST: fp.laxwin.com
       NODE_ENV: production
-      PORT: 8000
+      PORT: 8080
