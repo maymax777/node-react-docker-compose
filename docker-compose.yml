@@ -1,7 +1,7 @@
 version: '2'
 services:
   # Node Server
-  server:
+  backend:
     build:
       context: ./server/
     command: /usr/app/node_modules/.bin/nodemon src/index.js
@@ -15,7 +15,7 @@ services:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
   # React Client
-  client:
+  frontend:
     build:
       context: ./client/
     command: npm start
@@ -23,9 +23,16 @@ services:
       - ./client/:/usr/app
       - /usr/app/node_modules
     depends_on:
-      - server
+      - backend
     ports:
       - '3000:3000'
+  proxy:
+    image: nginx:latest
+    restart: unless-stopped
+    ports:
+      - '8000:80'
+    volumes:
+      - ./nginx/conf.d/app.conf:/etc/nginx/conf.d/app.conf
 #Docker Networks
 networks:
   app-network:

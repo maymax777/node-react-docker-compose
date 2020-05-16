@@ -1,11 +1,12 @@
 version: '2'
 services:
-  nginx-proxy:
-    image: jwilder/nginx-proxy:latest
+  proxy:
+    image: nginx:latest
+    restart: unless-stopped
     ports:
-      - '80:80'
+      - '8000:80'
     volumes:
-      - /var/run/docker.sock:/tmp/docker.sock
+      - ./nginx/conf.d/app.conf:/etc/nginx/conf.d/app.conf
   web:
     build: .
     expose:
