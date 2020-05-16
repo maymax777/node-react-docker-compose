@@ -4,7 +4,7 @@ services:
     image: nginx:latest
     restart: unless-stopped
     ports:
-      - '8000:80'
+      - '8000:8000'
     volumes:
       - ./nginx/conf.d/app.conf:/etc/nginx/conf.d/app.conf
   web:
