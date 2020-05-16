@@ -1,13 +1,13 @@
-var dotenv = require('dotenv'),
-  dotenvParseVariables = require('dotenv-parse-variables');
+var dotenv = require('dotenv');
+// dotenvParseVariables = require('dotenv-parse-variables');
 
-var env = dotenv.config({ path: '.env' }),
-  parsedEnv = dotenvParseVariables(env.parsed);
+var env = dotenv.config({ path: '.env' });
+//   parsedEnv = dotenvParseVariables(env.parsed);
 
 var database = {
-  host: parsedEnv.DB_HOST,
-  port: parsedEnv.DB_PORT,
-  db: parsedEnv.DB_NAME,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  db: process.env.DB_NAME,
 };
 
 module.exports = {
