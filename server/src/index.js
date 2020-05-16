@@ -31,7 +31,6 @@ app.get('/api', (req, res) => {
   let data = {
     message: 'Hello world, Woooooeeeee!!!!',
   };
-  console.log('/api: ');
   res.send(JSON.stringify(data, null, 2));
 });
 

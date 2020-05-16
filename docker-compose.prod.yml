@@ -1,11 +1,20 @@
 version: '2'
 services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy:latest
+    ports:
+      - '80:80'
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
   web:
     build: .
-    ports:
-      - "80:8000"
+    expose:
+      - 80
+    # ports:
+    #  - '80:8000'
     restart: always
     # env_file: ./server/.env # TODO - uncomment this to auto-load your .env file!
     environment:
+      VIRTUAL_HOST=fp.laxwin.com
       NODE_ENV: production
       PORT: 8000
