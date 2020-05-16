@@ -1,5 +1,37 @@
 version: '2'
 services:
+  # Nginx Service
+  webserver:
+    image: nginx:latest
+    container_name: webserver
+    build:
+      context: ./nginx/
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    tty: true
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    depends_on:
+      - server
+    networks:
+      - app-network
+  database:
+    image: mongo:latest
+    container_name: 'fp-mongo-container'
+    environment:
+      - MONGO_INITDB_DATABASE=mongo-db-1
+      - MONGO_INITDB_ROOT_USERNAME=maymax
+      - MONGO_INITDB_ROOT_PASSWORD=maymax122*
+    volumes:
+      - ./mongo-volume:/data/db
+    ports:
+      - '27017-27019:27017-27019'
+
+  # Node Server
   server:
     build:
       context: ./server/
@@ -8,11 +40,12 @@ services:
       - ./server/:/usr/app
       - /usr/app/node_modules
     ports:
-      - "8080:8080"
+      - '8080:8080'
     # env_file: ./server/.env # TODO - uncomment this to auto-load your .env file!
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
+  # React Client
   client:
     build:
       context: ./client/
@@ -23,4 +56,8 @@ services:
     depends_on:
       - server
     ports:
-      - "3000:3000"
+      - '3000:3000'
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
