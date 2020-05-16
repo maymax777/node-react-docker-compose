@@ -1,21 +1,11 @@
 version: '2'
 services:
-  proxy:
-    image: nginx:latest
-    restart: unless-stopped
-    ports:
-      - '8000:8000'
-    volumes:
-      - ./nginx/conf.d/app.conf:/etc/nginx/conf.d/app.conf
   web:
     build: .
-    # expose:
-    #  - 80
     ports:
-      - '8001:8080'
+      - '8080:8080'
     restart: always
-    # env_file: ./server/.env # TODO - uncomment this to auto-load your .env file!
+    env_file: ./server/.env # TODO - uncomment this to auto-load your .env file!
     environment:
-      VIRTUAL_HOST: fp.laxwin.com
       NODE_ENV: production
       PORT: 8080
