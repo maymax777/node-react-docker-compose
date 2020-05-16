@@ -15,6 +15,6 @@ services:
     restart: always
     # env_file: ./server/.env # TODO - uncomment this to auto-load your .env file!
     environment:
-      VIRTUAL_HOST=fp.laxwin.com
+      VIRTUAL_HOST: fp.laxwin.com
       NODE_ENV: production
       PORT: 8000
