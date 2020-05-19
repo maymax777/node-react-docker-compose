@@ -61,9 +61,10 @@ function serviceGetProductCount(before = 0) {
     today = new Date();
   oldDate.setDate(today.getDate() - before);
   console.log(today, oldDate);
+  let query = `created_at_max=${oldDate}`;
 
   return new Promise(function (resolve, reject) {
-    fetch(`${CONFIG.API_SHOPIFY_SERVER}${CONFIG.API_PRODUCT_COUNT}`, {
+    fetch(`${CONFIG.API_SHOPIFY_SERVER}${CONFIG.API_PRODUCT_COUNT}?${query}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -177,13 +178,14 @@ async function start() {
  * Test
  */
 function test() {
-  serviceGetProductCount(5)
-    .then((res) => {
-      console.log(res);
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+  start();
+  // serviceGetProductCount()
+  //   .then((res) => {
+  //     console.log(res);
+  //   })
+  //   .catch((err) => {
+  //     console.error(err);
+  //   });
 }
 
 module.exports = { serviceGetAllProducts, test };
