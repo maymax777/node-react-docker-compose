@@ -38,7 +38,6 @@ function serviceGetAllProducts(param) {
           url.lastIndexOf('page_info=') + 10,
           url.lastIndexOf('>')
         );
-        // console.log(url);
         response.json().then((res) => {
           if (response.ok) {
             let products = res.products.map((product) => ({
@@ -96,7 +95,7 @@ async function checkProduct(product) {
     product.stock = isProductExist.success;
     console.log(product);
     if (!isProductExist.success) {
-      // removeProduct(product.id);
+      removeProduct(product.id);
       console.log(product, ' has been removed!');
     }
   } catch (error) {
@@ -162,10 +161,12 @@ async function removeProduct(productId) {
   });
 }
 
+/**
+ *
+ */
 async function checkProductStock() {
   let totalProductCount = 0;
   let param = '';
-  let products = [];
 
   try {
     var res = await serviceGetProductCount();
@@ -186,9 +187,7 @@ async function checkProductStock() {
       let product = products[i];
       checkProduct(product);
       await sleep(DELAY);
-      // break;
     }
-    // break;
   }
 }
 

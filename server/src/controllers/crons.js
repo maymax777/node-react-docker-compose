@@ -1,4 +1,5 @@
 var cron = require('node-cron');
+var rfr = require('rfr');
 var productController = rfr('src/controllers/products');
 
 function cronStart() {
