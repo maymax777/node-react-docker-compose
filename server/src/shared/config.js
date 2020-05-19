@@ -12,6 +12,7 @@ var database = {
 
 module.exports = {
   database: database,
+  SIURL: 'https://us.shein.com/',
   API_SHOPIFY_SERVER: 'https://fashionplum.myshopify.com',
   API_PRODUCT_COUNT: '/admin/api/2019-07/products/count.json',
   API_GET_PRODUCTS: '/admin/api/2019-07/products.json',

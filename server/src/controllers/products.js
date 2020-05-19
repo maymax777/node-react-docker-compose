@@ -1,12 +1,14 @@
 const fetch = require('node-fetch');
 const request = require('request');
 const CONFIG = require('../shared/config');
+const { sleep } = require('../shared/utils');
+const DELAY = 1000; //ms
+const PAGE_LIMIT = 250;
 
 /**
  * Get all product ids limit upto 250
  */
 function serviceGetAllProducts(param) {
-  let today = new Date();
   return new Promise(function (resolve, reject) {
     fetch(
       `${CONFIG.API_SHOPIFY_SERVER}${CONFIG.API_GET_PRODUCTS}?limit=250&fields=id,variants&page_info=${param}`,
@@ -57,14 +59,8 @@ function serviceGetAllProducts(param) {
  * Get total count of products
  */
 function serviceGetProductCount(before = 0) {
-  let oldDate = new Date(),
-    today = new Date();
-  oldDate.setDate(today.getDate() - before);
-  console.log(today, oldDate);
-  let query = `created_at_max=${oldDate}`;
-
   return new Promise(function (resolve, reject) {
-    fetch(`${CONFIG.API_SHOPIFY_SERVER}${CONFIG.API_PRODUCT_COUNT}?${query}`, {
+    fetch(`${CONFIG.API_SHOPIFY_SERVER}${CONFIG.API_PRODUCT_COUNT}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -91,12 +87,34 @@ function serviceGetProductCount(before = 0) {
 }
 
 /**
+ *
+ * @param {*} product
+ */
+async function checkProduct(product) {
+  try {
+    const isProductExist = await checkProductExist(product.sku);
+    product.stock = isProductExist.success;
+    console.log(product);
+    if (!isProductExist.success) {
+      // removeProduct(product.id);
+      console.log(product, ' has been removed!');
+    }
+  } catch (error) {
+    console.error('checkProduct Error: ', error);
+  }
+}
+
+/**
  * Check product exist
  * @param {*} sku
  */
-function checkProduct(sku) {
+function checkProductExist(sku) {
   return new Promise((resolve, reject) => {
-    request(`${SIURL}/pdsearch/${sku}`, function (error, response, html) {
+    request(`${CONFIG.SIURL}/pdsearch/${sku}`, function (
+      error,
+      response,
+      html
+    ) {
       if (!error) {
         // console.log(html);
         if (!html.includes(`did not match any products`))
@@ -144,11 +162,10 @@ async function removeProduct(productId) {
   });
 }
 
-async function start() {
+async function checkProductStock() {
   let totalProductCount = 0;
   let param = '';
   let products = [];
-  let filteredProducts = [];
 
   try {
     var res = await serviceGetProductCount();
@@ -158,34 +175,28 @@ async function start() {
   }
   console.log(res, totalProductCount);
 
-  for (let pageId = 0; pageId < totalProductCount / 250; pageId++) {
-    await serviceGetAllProducts(param)
-      .then((res) => {
-        param = res.page_info;
-        products = products.concat(res.products);
-        console.log(param, res.products.length);
-      })
-      .catch((e) => {
-        console.log('e: ', e);
-      });
+  for (let pageId = 0; pageId < totalProductCount / PAGE_LIMIT; pageId++) {
+    let products = [];
+    try {
+      products = (await serviceGetAllProducts(param)).products;
+    } catch (error) {
+      console.error(error);
+    }
+    for (let i = 0; i < products.length; i++) {
+      let product = products[i];
+      checkProduct(product);
+      await sleep(DELAY);
+      // break;
+    }
     // break;
   }
-
-  console.log(products.length);
 }
 
 /**
- * Test
+ * startDailyCheck
  */
-function test() {
-  start();
-  // serviceGetProductCount()
-  //   .then((res) => {
-  //     console.log(res);
-  //   })
-  //   .catch((err) => {
-  //     console.error(err);
-  //   });
+function startDailyCheck() {
+  checkProductStock();
 }
 
-module.exports = { serviceGetAllProducts, test };
+module.exports = { serviceGetAllProducts, startDailyCheck };
